@@ -1,28 +1,16 @@
 #!/bin/bash
 set -e
-echo "🚀 启动 OpenWRT Docker 构建..."
-
-docker run --rm \
-  -v "$PWD/bin:/builder/bin" \
-  -v "$PWD/files:/builder/files" \
-  -v "$PWD/build.sh:/builder/build.sh" \
-  -e OP_rootfs="${OP_rootfs:-512}" \
-  -e OP_author="${OP_author:-GitHub Actions}" \
-  openwrt/imagebuilder:armsr-armv7-openwrt-24.10 \
-  bash -c '
-set -e
 
 echo "🧩 检查 ImageBuilder 根目录..."
-# 自动定位根目录
-for d in /builder /home/build /home/openwrt /openwrt /workdir /; do
+for d in /builder /openwrt /home/build /home/openwrt /workdir /; do
   if [ -f "$d/Makefile" ]; then
     cd "$d"
-    echo "✅ 已进入 OpenWrt 根目录: $d"
+    echo "✅ 已进入 ImageBuilder 根目录: $d"
     break
   fi
 done
 if [ ! -f Makefile ]; then
-  echo "❌ ERROR: 找不到 Makefile, 不是有效的 ImageBuilder 镜像"
+  echo "❌ ERROR: 未找到 Makefile，镜像结构不对"
   exit 1
 fi
 
@@ -92,8 +80,9 @@ config odhcpd 'odhcpd'
   option loglevel '4'
 DHCP
 
-echo "✅ 已配置旁路由模式：IP=192.168.2.2 网关=192.168.2.1 DHCP=关闭"
+echo "✅ 已配置旁路由：192.168.2.2 网关192.168.2.1 DHCP关"
 
 echo "🏗️ 开始构建镜像..."
 make image PROFILE=generic FILES=files
-'
+
+echo "✅ 构建完成，固件位于 bin/targets/armsr/armv7/"
