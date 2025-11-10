@@ -56,6 +56,36 @@ rm -rf tmp_openclash
 echo "✅ OpenClash 已添加完成。"
 
 # ============================================================
+# 🐳 添加 Docker 中文版 (luci-app-dockerman)
+# ============================================================
+echo "🐳 下载并集成 Docker 中文管理插件..."
+git clone --depth=1 https://github.com/lisaac/luci-app-dockerman.git tmp_docker
+git clone --depth=1 https://github.com/lisaac/luci-lib-docker.git tmp_libdocker
+
+# 拷贝文件
+cp -rf tmp_docker/files/* files/ || true
+cp -rf tmp_libdocker/files/* files/ || true
+rm -rf tmp_docker tmp_libdocker
+
+# 添加 docker 启动脚本和默认配置
+mkdir -p files/etc/init.d
+cat <<'DOCKERSERVICE' > files/etc/init.d/dockerd
+#!/bin/sh /etc/rc.common
+START=99
+start() {
+    echo "Starting Docker..."
+    dockerd &>/dev/null &
+}
+stop() {
+    echo "Stopping Docker..."
+    killall dockerd || true
+}
+DOCKERSERVICE
+chmod +x files/etc/init.d/dockerd
+
+echo "✅ Docker 中文管理界面 (luci-app-dockerman) 已添加完成。"
+
+# ============================================================
 # 🎨 替换默认主题为 Argon
 # ============================================================
 echo "🎨 下载 luci-theme-argon 主题..."
@@ -82,7 +112,7 @@ IMG_FILE="${OUTPUT_DIR}/thunder-onecloud-emmc-ext4.img"
 MNT_DIR="./mnt_ext4"
 
 echo "🧱 创建 EXT4 镜像文件..."
-IMG_SIZE_MB=512
+IMG_SIZE_MB=1024
 dd if=/dev/zero of="$IMG_FILE" bs=1M count=$IMG_SIZE_MB status=progress
 
 echo "⚙️ 格式化为 EXT4..."
