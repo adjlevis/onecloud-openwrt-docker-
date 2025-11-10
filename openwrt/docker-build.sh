@@ -1,13 +1,8 @@
 #!/bin/bash
-set -euxo pipefail
+set -e
 
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-WORKDIR="$SCRIPT_DIR"
-
-docker run --rm \
-  --user root \
-  -v "$WORKDIR/bin:/builder/bin" \
-  -v "$WORKDIR/files:/builder/files" \
-  -v "$WORKDIR/build.sh:/builder/build.sh" \
-  openwrt/imagebuilder:armsr-armv8-main \
-  bash -c "cd /builder && ./build.sh"
+docker run --rm -it \
+  -v $(pwd)/bin:/builder/bin \
+  -v $(pwd)/files:/builder/files \
+  -v $(pwd)/build.sh:/builder/build.sh \
+  openwrt/imagebuilder:armsr-armv7-master /builder/build.sh
