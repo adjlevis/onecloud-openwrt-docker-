@@ -14,7 +14,7 @@ openwrt/
 
 └── README.md                # 本说明文档
 
-# web：192.168.2.2   pass:root
+# web：192.168.2.2   password:root 
 
 
 玩客云u-boot https://github.com/hzyitc/u-boot-onecloud
