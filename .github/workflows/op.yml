@@ -20,25 +20,22 @@ jobs:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧱 Ensure openwrt directory exists
-        run: mkdir -p openwrt
-
-      - name: 🧹 Clean old release folder
+      - name: 🧱 Ensure directories exist
         run: |
-          rm -rf release/openwrt || true
-          mkdir -p release/openwrt
+          mkdir -p openwrt/bin openwrt/files release/openwrt
 
       - name: ⚙️ Prepare environment
+        working-directory: openwrt
         run: |
           sed -i 's/\r$//' docker-build.sh build.sh || true
           chmod +x docker-build.sh build.sh
-          mkdir -p bin files
           sudo chmod -R 777 bin files
 
       - name: 📦 Pull OpenWRT ImageBuilder
         run: docker pull openwrt/imagebuilder:armsr-armv7-master
 
       - name: 🏗️ Build firmware
+        working-directory: openwrt
         env:
           OP_rootfs: ${{ github.event.inputs.OP_rootfs }}
           OP_author: ${{ github.event.inputs.OP_author }}
@@ -47,14 +44,14 @@ jobs:
       - name: 📁 Package OpenWRT firmware
         run: |
           mkdir -p release/openwrt
-          cp -r bin/* release/openwrt/ || true
-          echo "✅ release/openwrt/ 目录内容如下："
+          cp -r openwrt/bin/* release/openwrt/ || true
+          echo "✅ release/openwrt 内容如下："
           ls -R release/openwrt || true
 
       - name: 📤 Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: openwrt-images
-          path: bin/
+          path: openwrt/bin/
           if-no-files-found: warn
           compression-level: 6
