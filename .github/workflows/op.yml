@@ -1,4 +1,4 @@
-name: OneCloud OpenWRT Docker Build
+name: N1 OpenWRT Docker Build
 
 on:
   workflow_dispatch:
@@ -9,19 +9,19 @@ on:
         default: '512'
       OP_author:
         description: '编译者名称'
-        required: true
-        default: 'djkyc'
+        required: false
+        default: 'GitHub Actions'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: openwrt
 
     steps:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
+
+      - name: 🧱 Ensure openwrt directory exists
+        run: mkdir -p openwrt
 
       - name: 🧹 Clean old release folder
         run: |
@@ -55,6 +55,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openwrt-images
-          path: openwrt/bin/
+          path: bin/
           if-no-files-found: warn
           compression-level: 6
