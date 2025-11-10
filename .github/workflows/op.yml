@@ -1,4 +1,4 @@
-name: OpenWRT 自动构建线刷镜像
+name: OneCloud OpenWRT 自动构建线刷镜像
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "latest"
-          name: "OpenWRT 最新线刷镜像"
+          name: "OneCloud OpenWRT 线刷包"
           body: |
             🔄 自动构建时间：${{ github.run_started_at }}
             ✅ 固件类型：EMMC 线刷镜像（EXT4）
