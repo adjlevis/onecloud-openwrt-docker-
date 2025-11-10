@@ -14,6 +14,13 @@ openwrt/
 
 └── README.md                # 本说明文档
 
-web：192.168.2.2   pass:root
-用openwrt.ai
+# web：192.168.2.2   pass:root
+
+
+玩客云u-boot https://github.com/hzyitc/u-boot-onecloud
+
+线刷包打包工具 https://github.com/hzyitc/AmlImg
+
+用openwrt.ai原件
+
 https://openwrt.ai/?target=amlogic%2Fmeson8b&id=thunder-onecloud
